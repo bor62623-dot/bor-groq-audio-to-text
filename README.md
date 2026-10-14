@@ -1,6 +1,6 @@
 # bor-groq-audio-to-text
 
-WorkBuddy 用户级 Skill：调用 Groq API（Whisper large-v3 / large-v3-turbo）把长音频快速转写成文字。面向课堂录音、讲座、播客等 100 分钟级长音频，云端转写约 1 分钟完成（本地 CPU 转写需 1~3 倍实时时长）。
+用户级 Skill：调用 Groq API（Whisper large-v3 / large-v3-turbo）把长音频快速转写成文字。面向课堂录音、讲座、播客等 100 分钟级长音频，云端转写约 1 分钟完成（本地 CPU 转写需 1~3 倍实时时长）。
 
 ## 功能
 
@@ -42,13 +42,6 @@ git clone https://github.com/bor62623-dot/bor-groq-audio-to-text.git ~/.codex/sk
 
 本 skill 就是「SKILL.md 说明 + 可执行脚本」的标准结构，任何能读指令文件的 agent 都能用：clone 到它认识的位置（或任意位置），在它的全局配置（AGENTS.md / CLAUDE.md / 系统提示词）里加一行指向 SKILL.md 的引用即可。
 
-### WorkBuddy
-
-```bash
-git clone https://github.com/bor62623-dot/bor-groq-audio-to-text.git ~/.workbuddy/skills/bor-groq-audio-to-text
-```
-
-（Windows 下即 `C:\Users\<用户名>\.workbuddy\skills\`，安装后新会话自动可用。）
 
 ## 获取 Groq API Key（免费）
 
