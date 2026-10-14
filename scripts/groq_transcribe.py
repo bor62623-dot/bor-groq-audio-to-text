@@ -10,7 +10,7 @@
 
 API key：只从环境变量 GROQ_API_KEY 读取（申请方式见 README）。
 """
-import io, json, os, re, subprocess, sys, tempfile, time
+import atexit, io, json, os, re, shutil, subprocess, sys, tempfile, time
 
 argv = sys.argv[1:]
 prompt, lang = None, "zh"
@@ -33,6 +33,7 @@ if not KEY:
 HALLU = re.compile(r"点赞|订阅|转发|打赏|明镜|字幕|Amara|下期再见|感谢观看|本节目|MING PAO|点击")
 
 tmp = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tmp, True)  # curl.cfg 里含明文 key，退出时必须删掉
 fwd = lambda p: p.replace("\\", "/")  # curl 配置文件里反斜杠是转义符，路径统一用正斜杠
 prompt_file = os.path.join(tmp, "prompt.txt")
 cfg_file = os.path.join(tmp, "curl.cfg")
