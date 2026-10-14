@@ -5,6 +5,7 @@
 ## 功能
 
 - 云端转写：默认 `whisper-large-v3-turbo`（快），可选 `whisper-large-v3`（更准）
+- **超长录音自动走切分路线**：Groq 有两个上限——25MB 是文件大小（压缩可解决），7200s 是单请求音频时长（只能切分）。超过 2 小时的录音切成多片分别转写，再按偏移合并时间轴
 - 产出三件套：`.md` 阅读稿（带 `[mm:ss]` 时间戳）、`.srt` 字幕、`.json` 分段数据
 - 自动清理：静音幻觉段过滤、重复刷屏丢弃、课间休息标记
 - 术语规整：外置 JSON 规则表（`--rules`），按领域自建，附一份通信课程示例
@@ -70,7 +71,14 @@ $env:GROQ_API_KEY = "gsk_xxxxxxxx"
 
 ## 使用
 
-以 100 分钟课堂录音为例（完整流程见 SKILL.md，在 WorkBuddy 中对话触发 skill 即自动执行）：
+先量时长，它决定走哪条路线（完整流程见 SKILL.md，在 WorkBuddy 中对话触发 skill 即自动执行）：
+
+```bash
+# 0. 量时长。> 7200s（约 2 小时）就必须切分，压缩救不了
+ffprobe -v error -show_entries format=duration -of csv=p=0 "录音/xxx.m4a"
+```
+
+**A. 常规（≤ 7200s，即约 2 小时以内）**
 
 ```bash
 # 1. 压缩（Groq 上传上限 25MB，长音频必须先压）
@@ -86,6 +94,28 @@ PYTHONIOENCODING=utf-8 python scripts/groq_transcribe.py work/xxx.ogg "转写/xx
 PYTHONIOENCODING=utf-8 python scripts/clean_transcript.py "转写/xxx-转写" \
     --breaks "45.5-54.8" --rules references/term-rules-example.json
 ```
+
+**B. 超长（> 7200s，例如 3 小时）**
+
+```bash
+# 1. 切分，每片 < 7200s（这里按 90 分钟切，切点 5410s）
+ffmpeg -y -i "录音/xxx.m4a" -t 5410 -ar 16000 -ac 1 -c:a libopus -b:a 24k work/xxx-part1.ogg
+ffmpeg -y -i "录音/xxx.m4a" -ss 5410 -ar 16000 -ac 1 -c:a libopus -b:a 24k work/xxx-part2.ogg
+
+# 2. 每片转写一次。免费层每小时约 7200 音频秒的配额，
+#    第二片通常要排到下一个小时窗才转得完——是配额排队，不是卡死
+PYTHONIOENCODING=utf-8 python scripts/groq_transcribe.py work/xxx-part1.ogg "转写/xxx-part1-转写" --prompt "..."
+PYTHONIOENCODING=utf-8 python scripts/groq_transcribe.py work/xxx-part2.ogg "转写/xxx-part2-转写" --prompt "..."
+
+# 3. 按偏移合并（--split 传切点；脚本会自检切点是否传对）
+PYTHONIOENCODING=utf-8 python scripts/merge_transcripts.py "转写/xxx-转写" \
+    --split 5410 "转写/xxx-part1-转写" "转写/xxx-part2-转写"
+
+# 4. 对合并后的 prefix 清理（不是对分片）
+PYTHONIOENCODING=utf-8 python scripts/clean_transcript.py "转写/xxx-转写" --breaks "131.0-135.7"
+```
+
+> **两个上限别混**：25MB 是文件大小，压缩能解决；7200s 是单请求音频时长，压缩解决不了。3 小时录音压完只有 23MB，轻松过 25MB 检查却撞 7200s。
 
 ## 自定义术语规整
 
