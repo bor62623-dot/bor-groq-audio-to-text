@@ -1,0 +1,14 @@
+# 密钥与本地配置——永不入库
+.env
+*.key
+.groq_key
+groq_key*
+gsk_*
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统杂物
+.DS_Store
+Thumbs.db
