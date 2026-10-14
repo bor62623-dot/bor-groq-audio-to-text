@@ -14,14 +14,6 @@ WorkBuddy 用户级 Skill：调用 Groq API（Whisper large-v3 / large-v3-turbo�
 
 依赖：Python 3、ffmpeg、curl。
 
-### WorkBuddy
-
-```bash
-git clone https://github.com/bor62623-dot/bor-groq-audio-to-text.git ~/.workbuddy/skills/bor-groq-audio-to-text
-```
-
-（Windows 下即 `C:\Users\<用户名>\.workbuddy\skills\`，安装后新会话自动可用。）
-
 ### Claude Code
 
 Claude Code 原生支持同格式的 Agent Skills，直接 clone 到个人 skills 目录，新会话自动可用（可用 `/bor-groq-audio-to-text` 直接调用）：
@@ -60,14 +52,6 @@ git clone https://github.com/bor62623-dot/bor-groq-audio-to-text.git ~/.codex/sk
 免费层说明：免费用，但有按分钟/小时/天的配额限制（转写按音频秒数计，`whisper-large-v3` 与 `large-v3-turbo` 配额相互独立，撞限额时换个模型或等下一小时即可）。具体额度以控制台 [Limits](https://console.groq.com/settings/limits) 页显示为准。
 
 ## API Key 配置
-
-```bash
-# Linux / macOS / Git Bash（当前会话）
-export GROQ_API_KEY=gsk_xxxxxxxx
-
-# Git Bash 持久化：写入 ~/.bashrc
-echo 'export GROQ_API_KEY=gsk_xxxxxxxx' >> ~/.bashrc
-```
 
 **Windows PowerShell**：
 
