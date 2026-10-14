@@ -61,8 +61,6 @@ git clone https://github.com/bor62623-dot/bor-groq-audio-to-text.git ~/.codex/sk
 
 ## API Key 配置
 
-**仓库里没有任何密钥，也永远不要把 key 提交进来。** key 只放环境变量：
-
 ```bash
 # Linux / macOS / Git Bash（当前会话）
 export GROQ_API_KEY=gsk_xxxxxxxx
@@ -84,10 +82,6 @@ $env:GROQ_API_KEY
 # （可选）临时设置：只对当前打开的这个终端窗口有效，关窗即失效，别拿它当正式配置
 $env:GROQ_API_KEY = "gsk_xxxxxxxx"
 ```
-
-**Windows CMD**（当前窗口）：`set GROQ_API_KEY=gsk_xxxxxxxx`；持久化用上文的 ① 号命令，或走图形界面：系统设置 → 环境变量 → 新建 `GROQ_API_KEY`。
-
-脚本启动时读取 `GROQ_API_KEY`，没有则报错退出。`.gitignore` 已包含 `gsk_*`、`.env` 等模式兜底，但最稳妥的做法始终是：key 只存在于环境变量里。
 
 ## 使用
 
