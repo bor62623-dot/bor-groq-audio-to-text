@@ -74,17 +74,18 @@ echo 'export GROQ_API_KEY=gsk_xxxxxxxx' >> ~/.bashrc
 **Windows PowerShell**：
 
 ```powershell
-# 当前会话
-$env:GROQ_API_KEY = "gsk_xxxxxxxx"
-
-# 持久化：写入用户级环境变量（已打开的终端不生效，新开的终端才生效）
+# ① 持久化（推荐，做一次就够）：写入用户级环境变量，之后所有新开的终端都能用
 [Environment]::SetEnvironmentVariable("GROQ_API_KEY", "gsk_xxxxxxxx", "User")
 
-# 验证（新开一个 PowerShell 窗口后）
+# ② 验证：关掉当前 PowerShell 窗口，重新开一个，然后输入：
 $env:GROQ_API_KEY
+# 应输出你的 key
+
+# （可选）临时设置：只对当前打开的这个终端窗口有效，关窗即失效，别拿它当正式配置
+$env:GROQ_API_KEY = "gsk_xxxxxxxx"
 ```
 
-**Windows CMD**（当前会话）：`set GROQ_API_KEY=gsk_xxxxxxxx`；持久化用上文的 PowerShell 命令，或走图形界面：系统设置 → 环境变量 → 新建 `GROQ_API_KEY`。
+**Windows CMD**（当前窗口）：`set GROQ_API_KEY=gsk_xxxxxxxx`；持久化用上文的 ① 号命令，或走图形界面：系统设置 → 环境变量 → 新建 `GROQ_API_KEY`。
 
 脚本启动时读取 `GROQ_API_KEY`，没有则报错退出。`.gitignore` 已包含 `gsk_*`、`.env` 等模式兜底，但最稳妥的做法始终是：key 只存在于环境变量里。
 
